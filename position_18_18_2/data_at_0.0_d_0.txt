@@ -1,0 +1,10 @@
+{'Theta Percent': 0.0, 'Theta degrees': 0, 'Data Rate': 12.321806725695636}
+{'Theta Percent': 0.125, 'Theta degrees': 45, 'Data Rate': 12.321806725695636}
+{'Theta Percent': 0.25, 'Theta degrees': 90, 'Data Rate': 12.321806725695636}
+{'Theta Percent': 0.375, 'Theta degrees': 135, 'Data Rate': 12.321806725695636}
+{'Theta Percent': 0.5, 'Theta degrees': 180, 'Data Rate': 12.321806725695636}
+Max Index: 1
+Theta Degrees for highest data rate: 0
+Theta Percent for the highest data rate: 0.0
+Max Data Rate: 12.321806725695636
+Line of sight (d_percent): 0

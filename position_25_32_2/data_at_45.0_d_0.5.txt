@@ -1,0 +1,14 @@
+{'Theta Percent': 0.0, 'Theta degrees': 0, 'Data Rate': 17.889967144995722}
+{'Theta Percent': 0.125, 'Theta degrees': 45, 'Data Rate': 17.8980041480132}
+{'Theta Percent': 0.25, 'Theta degrees': 90, 'Data Rate': 17.881028645008705}
+{'Theta Percent': 0.375, 'Theta degrees': 135, 'Data Rate': 17.84780054475678}
+{'Theta Percent': 0.5, 'Theta degrees': 180, 'Data Rate': 17.817050136021237}
+{'Theta Percent': 0.625, 'Theta degrees': 225, 'Data Rate': 17.808052633503706}
+{'Theta Percent': 0.75, 'Theta degrees': 270, 'Data Rate': 17.826812055381463}
+{'Theta Percent': 0.875, 'Theta degrees': 315, 'Data Rate': 17.860998284284452}
+{'Theta Percent': 1.0, 'Theta degrees': 360, 'Data Rate': 17.889967144995722}
+Max Index: 2
+Theta Degrees for highest data rate: 45
+Theta Percent for the highest data rate: 0.125
+Max Data Rate: 17.8980041480132
+Line of sight (d_percent): 0.5

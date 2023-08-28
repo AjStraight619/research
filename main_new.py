@@ -14,23 +14,84 @@ def read_file(positionFolder, file):
             data = [complex(line.rstrip('\n').replace('i', 'j')) for line in f]
         else:
             data = [tuple(map(float, line.split(','))) for line in f]
-    return data
+    return [data]  # Return the data as a list with a single element
 
-def calculate_theta_and_datarates(U1_Rx, U1_RIS, U1_G, U1_H, U1_D, theta, n, P1, Noise, d_percent):
-    datarates = []
-    theta_values = []
+# def calculate_datarates(U1_G, U1_H, U1_D, theta, P1, Noise, d_percent, n=64):
+#     U1_G = np.array(U1_G).reshape(n, 1)  # Reshape U1_G to (n, 1)
+#     U1_H = np.array(U1_H).reshape(n, 1)  # Reshape U1_H to (n, 1)
+#     U1_D = np.array(U1_D).reshape(1, 1)  # Reshape U1_D to (1, 1)
 
-    for i in range(236):
-        # Since U1_G and U1_H only have one sublist, use U1_G[0] and U1_H[0]
-        # Since U1_D only has one element, use U1_D[0]
-        U1_PathLoss = abs(np.dot(np.dot(U1_G[0], theta), np.transpose(U1_H[0])) + d_percent * U1_D[0])
+#     print(np.shape(U1_G))
+#     print(np.shape(U1_H))
+#     print(np.shape(U1_D))
+#     print(np.shape(theta))
+
+#     datarates = []
+#     theta_values = []
+
+
+#     for i in range(n):
+
+#         U1_G = np.array(U1_G).reshape(64, 1)  # Reshape U1_G to (64, 1)
+#         U1_H = np.array(U1_H).reshape(64, 1)  # Reshape U1_H to (64, 1)
+#         U1_D = np.array(U1_D).reshape(1, 1)  # Reshape U1_D to (1, 1)
+
+#         U1_PathLoss = np.dot(np.dot(U1_G.conj().T, theta), U1_H.conj()) + d_percent * np.abs(U1_D)
+#         # U1_PathLoss = np.abs(U1_PathLoss)
+#         U1_SNR = P1 * U1_PathLoss / Noise
+#         R1 = np.log2(1 + U1_SNR)
+#         datarates.append(R1)
+
+#         # Print intermediate values
+#         if i < 10:
+#             print(f"Iteration {i + 1}:")
+#             print(f"U1_G: {U1_G[i]}")
+#             print(f"U1_H: {U1_H[i]}")
+#             print(f"Theta: {theta[i, i]}")
+#             print(f"U1_PathLoss: {U1_PathLoss}")
+#             print(f"absU1_PathLoss: {np.abs(U1_PathLoss)}")
+#             print(f"U1_SNR: {U1_SNR}")
+#             print(f"Data Rate: {R1}")
+#             print("-------------------------")
+
+#         theta_values.append(np.angle(theta[i, i], deg=True))
+
+
+#     return theta_values, datarates
+
+def calculate_datarates(U1_G, U1_H, U1_D, theta, P1, Noise, d_percent):
+    n_iter = len(U1_G)  # Assuming U1_G and U1_H have the same length
+
+    # Iterate over the number of iterations
+    for i in range(n_iter):
+        # Get the i-th matrix from U1_G and U1_H
+        U1_G_i = np.squeeze(U1_G[i])
+        U1_H_i = np.squeeze(U1_H[i])
+        U1_PathLoss = np.dot(np.dot(U1_G_i.conj().T, theta), U1_H_i.conj()) + d_percent * np.abs(U1_D)
+        # print("Theta from calc function: ", theta)
+
+        # Calculate the absolute value of PathLoss
+        absU1_PathLoss = np.abs(U1_PathLoss)
+
+        # Calculate SNR
         U1_SNR = P1 * U1_PathLoss / Noise
-        data_rate = np.log2(1 + U1_SNR)
 
-        datarates.append(data_rate)
-        theta_values.append(np.angle(theta[0,0], deg=True))  # assuming all diagonal elements have the same phase
+        # Calculate data rate
+        DataRate = np.log2(1 + U1_SNR)
+        
+        # Print out the values
+        # print("-------------------------")
+        # print(f"Iteration {i+1}:")
+        # print(f"U1_G at iteration {i+1}: {U1_G_i}")
+        # print(f"U1_H at iteration {i+1}: {U1_H_i}")
+        # print(f"U1_PathLoss: {U1_PathLoss}")
+        # print(f"absU1_PathLoss: {absU1_PathLoss}")
+        # print(f"U1_SNR: {U1_SNR}")
+        # print(f"Data Rate: {DataRate}")
 
-    return theta_values, datarates
+    return DataRate
+
+
 
 def write_output_file(theta_degrees, datarates, position, d_percent):
     max_index = np.argmax(datarates)
@@ -107,9 +168,6 @@ def main():
         U1_D = read_file(position, "D.txt")
         U1_G = read_file(position, "G.txt")
         U1_H = read_file(position, "H.txt")
-        print("Length of U1_G: ", len(U1_G))
-        print("Length of U1_H: ", len(U1_H))
-        print("Length of U1_D: ", len(U1_D))
 
         n = 64
         Noise = 1e-11
@@ -118,25 +176,27 @@ def main():
         theta = np.zeros((n, n), dtype=complex)
         d_percent = 0 # 0 if there is no line of sight, 1 if full line of sight [0:1]
 
-       
         theta_degrees = np.arange(0, 361, 45)  # Angles from 0 to 360 in steps of 45
         datarates_all = []
+        
+        # create new theta matrix
+        
 
         for theta_degree in theta_degrees:
-            theta_percent = theta_degree / 360.0
+            theta_percent = theta_degree / 360
             np.fill_diagonal(theta, np.exp(2*np.pi*theta_percent*1j))
-            _, datarates = calculate_theta_and_datarates(U1_Rx, U1_RIS, U1_G, U1_H, U1_D, theta, n, P1, Noise, d_percent)
+            print("Abs of theta from main:", np.abs(theta))
+    
+            datarates = calculate_datarates(U1_G, U1_H, U1_D, theta, P1, Noise, d_percent)
+
             datarates_all.append(datarates)
 
-        theta = np.exp(2*np.pi*theta_percent*1j)
         # Compute average data rate for each angle
         avg_datarates = [np.mean(datarates) for datarates in datarates_all]
         write_output_file(theta_degrees, avg_datarates, position, d_percent)
         generate_plot(theta_degrees, avg_datarates, position, d_percent)
 
+
 if __name__ == "__main__":
     main()
-
-
-
 
