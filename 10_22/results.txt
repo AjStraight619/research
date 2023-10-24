@@ -1,0 +1,18 @@
+Best phase shift combination (Brute force): (0.0, 0.41887902047863906, 0.0, 0.41887902047863906)
+Max data rate (Brute force): 13.08389693982212
+Optimized phase shift combination (BFGS): [-0.25606616  0.25284641 -0.21323418  0.21645315]
+Optimized max data rate (BFGS): 13.08469077018119
+Optimized phase shift combination (SLSQP): [0.         0.50711494 0.04261212 0.47217741]
+Optimized max data rate (SLSQP): 13.084690370620308
+   Phase shift (BFGS) in radians  Phase shift (BFGS) in degrees
+0                      -0.257099                     -14.730701
+1                       0.252983                      14.494859
+2                      -0.212986                     -12.203214
+3                       0.217101                      12.438988
+Optimized max data rate (BFGS): 13.084690492329571
+   Phase shift (SLSQP) in radians  Phase shift (SLSQP) in degrees
+0                        0.000000                        0.000000
+1                        0.489989                       28.074282
+2                        0.003034                        0.173842
+3                        0.392117                       22.466630
+Optimized max data rate (SLSQP): 13.084041480059648
